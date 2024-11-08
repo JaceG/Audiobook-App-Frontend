@@ -1,8 +1,9 @@
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
+import { Outlet } from 'react-router-dom'
 
 // eslint-disable-next-line react/prop-types
-function AuthenticatonLayout({children}) {
+function AuthenticatonLayout() {
     const sidebariconHover = false;
     const sideMenu = false
     return (
@@ -10,7 +11,7 @@ function AuthenticatonLayout({children}) {
     <Nav />
     <div className="content-body" style={{ minHeight: window.screen.height + 20 }}>
       <div className="container-fluid">
-        {children}
+        <Outlet/>
       </div>
     </div>
     <Footer changeFooter="out-footer style-2" />

@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
-import {  useSelector} from "react-redux";
 
 const NavHader = () => {
  
   // const dispatch = useDispatch();
-  const sideMenu = useSelector(state => state.sideMenu);
+  const sideMenu = false;
   const handleToogle = () => {
    	// dispatch(navtoggle());
   };
