@@ -11,14 +11,4 @@ export default defineConfig({
 			jsxImportSource: 'react', // Optional: specifies where JSX runtime comes from
 		}),
 	],
-	resolve: {
-		alias: {
-			components: path.resolve(__dirname, 'src/components'),
-			assets: path.resolve(__dirname, 'src/assets'),
-			examples: path.resolve(__dirname, 'src/examples'),
-			layouts: path.resolve(__dirname, 'src/layouts'),
-			pages: path.resolve(__dirname, 'src/pages'),
-			'@constants': path.resolve(__dirname, 'src/constants'),
-		},
-	},
 });

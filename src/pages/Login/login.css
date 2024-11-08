@@ -1,0 +1,5 @@
+.center-login-page {
+    position: absolute;
+    top: 50px;
+    transform: translateX(calc(15%));
+}
