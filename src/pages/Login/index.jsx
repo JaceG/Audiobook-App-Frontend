@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import request from '../../request';
 import BgImage from '../../assets/images/bg1.png';
@@ -9,7 +9,7 @@ import './login.css';
 import { routes } from '../../constants/api';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader';
-
+import { StoreContext } from '../../App';
 function Login(props) {
 	const [email, setEmail] = useState('');
 	let errorsObj = { email: '', password: '' };
@@ -17,6 +17,7 @@ function Login(props) {
 	const [password, setPassword] = useState('');
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
+	const { setToken } = useContext(StoreContext);
 	// const navigate = useNavigate()
 
 	function onLogin(e) {
@@ -54,7 +55,7 @@ function Login(props) {
 				toast.success(result.data.message, {
 					position: 'top-center',
 				});
-				localStorage.setItem('token', token);
+				setToken(token);
 				navigate('/dashboard');
 			}
 		} catch (e) {
