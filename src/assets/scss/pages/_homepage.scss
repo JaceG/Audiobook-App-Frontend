@@ -1080,7 +1080,7 @@ tr{
 	z-index:1;
 	background-color:$white;
 	.search-area{
-		width: 21.875rem;
+		width: 100% !important;
 		flex-direction: row-reverse;
 		border: 1px solid transparent;
 		overflow: hidden;

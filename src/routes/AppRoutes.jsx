@@ -4,6 +4,7 @@ import Register from '../pages/Register';
 import AuthenticatonLayout from '../layouts/AuthenticatonLayout';
 import Dashboard from '../pages/Dashboard/Home';
 import GuestLayout from '../layouts/GuestLayout';
+import Friends from '../pages/Friends';
 
 export default function AppRoutes() {
 	return (
@@ -15,6 +16,7 @@ export default function AppRoutes() {
 			</Route>
 			<Route element={<AuthenticatonLayout />}>
 				<Route path='/dashboard' element={<Dashboard />} />
+				<Route path='/friends' element={<Friends />} />
 			</Route>
 		</Routes>
 	);

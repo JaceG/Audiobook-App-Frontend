@@ -28064,7 +28064,7 @@ tr .trans-td-list {
   z-index: 1;
   background-color: #fff; }
   .page-title .search-area {
-    width: 21.875rem;
+    width: 100%; /* Jace changed this line from 21.875rem */
     flex-direction: row-reverse;
     border: 1px solid transparent;
     overflow: hidden;
