@@ -42,12 +42,28 @@ export default function App() {
 			},
 		});
 	};
+
+	const setAudiobook = (id, url) => {
+		setGlobalStore({
+			...globalStore,
+			currentAudiobook: { id, url },
+		});
+	};
+
+	const clearAudiobook = () => {
+		setGlobalStore({
+			...globalStore,
+			currentAudiobook: null,
+		});
+	};
 	return (
 		<StoreContext.Provider
 			value={{
 				store: globalStore,
 				setToken,
 				removeToken,
+				setAudiobook,
+				clearAudiobook,
 			}}>
 			<AppRoutes />
 			<ToastContainer />

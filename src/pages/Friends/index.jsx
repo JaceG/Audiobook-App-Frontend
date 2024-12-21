@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Dropdown, Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { nanoid } from 'nanoid';
 import { IMAGES } from '../Dashboard/Content';
+import { routes } from '../../constants/api';
+import { toast } from 'react-toastify';
+import request from '../../request';
 
 const CardListBlog = [
 	// {
@@ -62,6 +65,12 @@ const CardListBlog = [
 const Teachers = () => {
 	const [postModal, setPostModal] = useState(false);
 	const [contacts, setContacts] = useState(CardListBlog);
+	const [search, setSearch] = useState('');
+	const [users, setUsers] = useState([]);
+	const timeoutRef = useRef(null);
+	const [friends, setFriends] = useState([]);
+	const previousFriendsCountRef = useRef(0);
+	const navigate = useNavigate();
 	// delete data
 	const handleDeleteClick = (contactId) => {
 		const newContacts = [...contacts];
@@ -197,6 +206,81 @@ const Teachers = () => {
 			addFormData.image = src;
 		}, 200);
 	};
+
+	const searchUsers = async (search) => {
+		try {
+			const response = await request.post(routes.SEARCH_USER, {
+				name: search,
+			});
+			setUsers(response.data.data);
+		} catch (e) {
+			setUsers([]);
+			toast.error(
+				e?.response?.data?.error ||
+					'Unable to complete request try again later',
+				{
+					position: 'top-center',
+				}
+			);
+		}
+	};
+	const handleSearch = async (e) => {
+		const search = e.target.value;
+		setSearch(search);
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current);
+			timeoutRef.current = null;
+		}
+		timeoutRef.current = setTimeout(async () => {
+			timeoutRef.current = null;
+			searchUsers(search);
+		}, 1000);
+	};
+
+	const handleAddFriend = async (id) => {
+		try {
+			const response = await request.post(routes.ADD_FRIEND, {
+				id,
+			});
+			toast.success(response.data.message, {
+				position: 'top-center',
+			});
+			if (previousFriendsCountRef.current === 0) {
+				navigate('/audiobooks');
+			}
+			getFriends();
+		} catch (e) {
+			setUsers([]);
+			toast.error(
+				e?.response?.data?.error ||
+					'Unable to complete request try again later',
+				{
+					position: 'top-center',
+				}
+			);
+		}
+	};
+
+	const getFriends = async () => {
+		try {
+			const response = await request.get(routes.GET_FRIENDS);
+			setFriends(response.data.data);
+			previousFriendsCountRef.current = response.data.data.length;
+		} catch (e) {
+			setUsers([]);
+			toast.error(
+				e?.response?.data?.error ||
+					'Unable to complete request try again later',
+				{
+					position: 'top-center',
+				}
+			);
+		}
+	};
+
+	useEffect(() => {
+		getFriends();
+	}, []);
 	return (
 		<div className='row'>
 			<div className='col-xl-12'>
@@ -206,6 +290,8 @@ const Teachers = () => {
 							type='text'
 							className='form-control w-100'
 							placeholder='Search here...'
+							value={search}
+							onChange={handleSearch}
 						/>
 						{/* <span className='input-group-text'>
 							<Link to={'#'}>
@@ -247,27 +333,33 @@ const Teachers = () => {
 			</div>
 			<div className='col-xl-12'>
 				<div className='row'>
-					{contacts.map((contact, index) => (
-						<div className='col-xl-3 col-lg-4 col-sm-6' key={index}>
-							<div className='card contact_list text-center'>
-								<div className='card-body'>
-									<div className='user-content'>
-										<div className='user-info'>
-											<div className='user-img'>
-												<img
-													src={contact.image}
-													alt=''
-													className='avatar avatar-xl'
-												/>
+					{(users && users.length > 0 ? users : friends).map(
+						(user, index) => (
+							<div
+								className='col-xl-3 col-lg-4 col-sm-6'
+								key={index}>
+								<div className='card contact_list text-center'>
+									<div className='card-body'>
+										<div className='user-content'>
+											<div className='user-info'>
+												<div className='user-img'>
+													<img
+														src={
+															user.image ||
+															'https://www.google.com/url?sa=i&url=https%3A%2F%2Fpinnacle.works%2Fdummy-image%2F&psig=AOvVaw2KKqJKkMW7DjM5jfCdqBRK&ust=1734374243000000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCKC30de1qooDFQAAAAAdAAAAABAE'
+														}
+														alt=''
+														className='avatar avatar-xl'
+													/>
+												</div>
+												<div className='user-details'>
+													<h4 className='user-name mb-0'>
+														{user.name}
+													</h4>
+													<p>{user.email}</p>
+												</div>
 											</div>
-											<div className='user-details'>
-												<h4 className='user-name mb-0'>
-													{contact.Cust_Name}
-												</h4>
-												<p>{contact.Post}</p>
-											</div>
-										</div>
-										<Dropdown>
+											{/* <Dropdown>
 											<Dropdown.Toggle
 												as='div'
 												className='btn sharp btn-light i-false'>
@@ -305,9 +397,9 @@ const Teachers = () => {
 													Delete
 												</Dropdown.Item>
 											</Dropdown.Menu>
-										</Dropdown>
-									</div>
-									<div className='contact-icon'>
+										</Dropdown> */}
+										</div>
+										{/* <div className='contact-icon'>
 										<span className='badge badge-success light'>
 											{contact.Subject}
 										</span>
@@ -317,27 +409,37 @@ const Teachers = () => {
 										<span className='badge badge-danger light'>
 											Art
 										</span>
-									</div>
-									<div className='d-flex align-items-center'>
-										<Link
-											to={'/app-profile'}
-											className='btn  btn-primary btn-sm w-50 me-2'>
-											<i className='fa-solid fa-user me-2'></i>
-											Profile
-										</Link>
-										<Link
-											to={'/chat'}
-											className='btn  btn-secondary btn-sm w-50'>
-											<i className='fa-sharp fa-regular fa-envelope me-2'></i>
-											Chat
-										</Link>
+									</div> */}
+										<div className='d-flex align-items-center justify-content-center'>
+											<button
+												style={{
+													cursor: friends.find(
+														(friend) =>
+															friend._id ===
+															user._id
+													)
+														? 'not-allowed'
+														: 'pointer',
+													pointerEvents: 'all',
+												}}
+												disabled={friends.find(
+													(friend) =>
+														friend._id === user._id
+												)}
+												onClick={() =>
+													handleAddFriend(user._id)
+												}
+												className='btn btn-success'>
+												Add Friend
+											</button>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					))}
+						)
+					)}
 				</div>
-				<div className='table-pagenation teach'>
+				{/* <div className='table-pagenation teach'>
 					<small>
 						Showing <span>1-12</span> from <span> 24</span> data
 					</small>
@@ -365,7 +467,7 @@ const Teachers = () => {
 							</li>
 						</ul>
 					</nav>
-				</div>
+				</div> */}
 			</div>
 
 			<Modal

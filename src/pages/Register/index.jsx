@@ -15,6 +15,7 @@ function Register(props) {
 	let errorsObj = { email: '', password: '' };
 	const [errors, setErrors] = useState(errorsObj);
 	const [password, setPassword] = useState('');
+	const [confirmPassword, setConfirmPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 
@@ -32,6 +33,10 @@ function Register(props) {
 		}
 		if (password === '') {
 			errorObj.password = 'Password is Required';
+			error = true;
+		}
+		if (password !== confirmPassword) {
+			errorObj.confirmPassword = 'Passwords do not match';
 			error = true;
 		}
 		if (!errorObj.phone && !/^\d{10,10}$/.test(phone)) {
@@ -182,6 +187,7 @@ function Register(props) {
 														</span>
 													</label>
 													<input
+														type='password'
 														defaultValue={password}
 														onChange={(e) =>
 															setPassword(
@@ -195,6 +201,35 @@ function Register(props) {
 												</div>
 												{errors.password && (
 													<div>{errors.password}</div>
+												)}
+												<div className='form-group mb-3'>
+													<label className='mb-1 '>
+														<strong>
+															Confirm Password
+														</strong>
+														<span className='required'>
+															*
+														</span>
+													</label>
+													<input
+														type='password'
+														defaultValue={
+															confirmPassword
+														}
+														onChange={(e) =>
+															setConfirmPassword(
+																e.target.value
+															)
+														}
+														className='form-control'
+														placeholder='confirm password'
+														//defaultValue="Password"
+													/>
+												</div>
+												{errors.confirmPassword && (
+													<div>
+														{errors.confirmPassword}
+													</div>
 												)}
 												<div className='text-center mt-4'>
 													<button

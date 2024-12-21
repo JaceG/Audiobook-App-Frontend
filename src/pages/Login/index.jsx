@@ -1,5 +1,6 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import request from '../../request';
 import BgImage from '../../assets/images/bg1.png';
 import logo from '../../assets/images/logo-full.png';
@@ -10,6 +11,7 @@ import { routes } from '../../constants/api';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader';
 import { StoreContext } from '../../App';
+
 function Login(props) {
 	const [email, setEmail] = useState('');
 	let errorsObj = { email: '', password: '' };
@@ -18,7 +20,6 @@ function Login(props) {
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const { setToken } = useContext(StoreContext);
-	// const navigate = useNavigate()
 
 	function onLogin(e) {
 		e.preventDefault();
@@ -55,8 +56,12 @@ function Login(props) {
 				toast.success(result.data.message, {
 					position: 'top-center',
 				});
+				let redirection = '/dashboard';
+				if (!result.data.friends) {
+					redirection = '/friends';
+				}
 				setToken(token);
-				navigate('/dashboard');
+				navigate(redirection);
 			}
 		} catch (e) {
 			setLoading(false);
@@ -99,7 +104,9 @@ function Login(props) {
 														alt=''
 													/>
 													<img
-														className='logo-abbr light-logo text-center m-auto'
+														className='logo-abbr light-logo text-center m
+
+-auto'
 														width='200'
 														src={logolight}
 														alt=''
@@ -193,7 +200,7 @@ function Login(props) {
 												</div>
 												<div className='row d-flex justify-content-between mt-4 mb-2'>
 													<div className='mb-3'>
-														<div className='form-check custom-checkbox ms-1'>
+														{/* <div className='form-check custom-checkbox ms-1'>
 															<input
 																type='checkbox'
 																className='form-check-input'
@@ -205,12 +212,19 @@ function Login(props) {
 																Remember my
 																preference
 															</label>
-														</div>
+														</div> */}
 													</div>
-													<div className='mb-3'>
-														<Link to='/page-register'>
-															Sign up
-														</Link>
+													<div className='d-flex justify-content-between'>
+														<div className='mb-3'>
+															<Link to='/register'>
+																Sign up
+															</Link>
+														</div>
+														<div className='mb-3'>
+															<Link to='/forgot-password'>
+																Forgot Password?
+															</Link>
+														</div>
 													</div>
 												</div>
 												<div className='text-center'>
@@ -232,5 +246,10 @@ function Login(props) {
 		</>
 	);
 }
+
+Login.propTypes = {
+	errorMessage: PropTypes.string,
+	successMessage: PropTypes.string,
+};
 
 export default Login;

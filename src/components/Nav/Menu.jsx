@@ -58,6 +58,26 @@ export const MenuList = [
 			// },
 		],
 	},
+
+	{
+		title: 'Audiobooks',
+		classsChange: 'mm-collapse',
+		iconStyle: <i className='material-symbols-outlined'>person</i>,
+		content: [
+			{
+				title: 'Audiobooks',
+				to: 'audiobooks',
+			},
+			// {
+			// 	title: 'Friend Detail',
+			// 	to: 'friend-detail',
+			// },
+			// {
+			// 	title: 'Add New Friend',
+			// 	to: 'add-friend',
+			// },
+		],
+	},
 	// {
 	//     title:'Food',
 	//     classsChange: 'mm-collapse',

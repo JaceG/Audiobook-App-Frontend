@@ -1908,3 +1908,10 @@ form#step-form-horizontal .form-group .text-label {
   }
 }
 
+.web-audio-player {
+  position: fixed;
+    border: 0px;
+    left: 0px;
+    z-index: 1111111111;
+    bottom: 0px;
+}
